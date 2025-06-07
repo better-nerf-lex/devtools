@@ -6,27 +6,36 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+      server:
+        webflux:
+          routes:
+            - uri: http://localhost:5173
+              predicates:
+                - Path=/ui/**
+              filters:
+                - StripPrefix=1
+            - uri: http://localhost:8081
+              predicates:
+                - Path=/api/**
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
 
-      routes:
-        - id: frontend-route
-          uri: http://localhost:5173
-          predicates:
-            - Path=/ui/**
-          filters:
-            - StripPrefix=1
-        - id: backend-route
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/**
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty: DEBUG
 
 management:
   endpoints:
     web:
       exposure:
-        include: gateway
+        include: gateway, health, info, metrics
+  endpoint:
+    gateway:
+      enabled: true
+

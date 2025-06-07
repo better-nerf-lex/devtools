@@ -8,4 +8,4 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
     ports:
-      - '27017:27017'
+      - '5432:5432'
