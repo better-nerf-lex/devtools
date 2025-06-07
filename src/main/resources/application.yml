@@ -9,14 +9,16 @@ spring:
       server:
         webflux:
           routes:
-            - uri: http://localhost:5173
-              predicates:
-                - Path=/ui/**
-              filters:
-                - StripPrefix=1
-            - uri: http://localhost:8081
-              predicates:
-                - Path=/api/**
+          - uri: http://localhost:5173
+            predicates:
+              - Path=/**
+            order: 1000  
+          - uri: http://localhost:8081
+            predicates:
+              - Path=/api/**
+            filters:
+              - StripPrefix=1
+            order: 1
           globalcors:
             cors-configurations:
               '[/**]':
