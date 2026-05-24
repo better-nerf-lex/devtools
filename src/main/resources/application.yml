@@ -12,7 +12,7 @@ spring:
           - uri: http://localhost:5173
             predicates:
               - Path=/**
-            order: 1000  
+            order: 1000
           - uri: http://localhost:8081
             predicates:
               - Path=/api/**
@@ -39,5 +39,5 @@ management:
         include: gateway, health, info, metrics
   endpoint:
     gateway:
-      enabled: true
+      access: read_only
 
