@@ -26,36 +26,40 @@ The proxy is configured in `src/main/resources/application.yml`:
 
 ## Local Startup
 
-1. Start the local dependencies from `devtools`:
-
-   ```bash
-   docker compose up -d
-   ```
-
-   The current Compose configuration starts PostgreSQL on `localhost:5432`.
-
-2. Run the services required by `src/main/resources/application.yml`:
+1. Start the shared local dependencies from `gateway`:
 
    ```bash
    cd ../gateway
+   docker compose up -d
+   ```
+
+   Gateway owns the local dependency stack. Its Compose file starts PostgreSQL on `localhost:5432`, Elasticsearch on `localhost:9200`, Kibana on `localhost:5601`, and LocalStack on `localhost:4566`. Start this stack before the application services so `gateway`, `file-service`, and `subscription-service` all connect to the same local dependencies.
+
+2. Run `gateway` before the other application services:
+
+   ```bash
    ./mvnw spring-boot:run
    ```
+
+   `gateway` expects the local PostgreSQL database `gateway` with user `gateway_user` and password `gateway_password`, matching `gateway/compose.yml`.
+
+3. Run the other services required by the flow you are working on:
 
    ```bash
    cd ../client-front
    bun run dev
    ```
 
-   The proxy expects `gateway` on port `8081` and `client-front` on port `5173`. Start additional services such as `file-service` and `subscription-service` when working on flows that call them.
+   Start additional services such as `file-service` and `subscription-service` when working on flows that call them. The proxy expects `gateway` on port `8081` and `client-front` on port `5173`.
 
-3. Run the local proxy:
+4. Run the local proxy:
 
    ```bash
    cd ../devtools
    ./mvnw spring-boot:run
    ```
 
-4. Open [http://localhost:8080](http://localhost:8080).
+5. Open [http://localhost:8080](http://localhost:8080).
 
 ## AI Agent Workspace Setup
 
